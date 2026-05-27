@@ -561,5 +561,24 @@
             window.scrollTo(0, 0);
         }
     </script>
+    <script>
+let submitted = false;
+
+document.addEventListener("visibilitychange", function() {
+  if (document.hidden && !submitted) {
+    submitted = true;
+    alert("You left the exam page. Submitting automatically.");
+    document.getElementById("examForm").submit();
+  }
+});
+
+window.onbeforeunload = function() {
+  if (!submitted) {
+    return "Leaving will submit your exam. Are you sure?";
+  }
+};
+</script>
+</body>
+</html>
 </body>
 </html>
