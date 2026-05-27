@@ -31,6 +31,9 @@
             padding: 40px;
             max-width: 600px;
             width: 100%;
+            /* Ensure container sits above the decorative background SVG */
+            position: relative;
+            z-index: 1;
         }
 
         /* Page title */
@@ -233,9 +236,59 @@
                 font-size: 16px;
             }
         }
+        /* ==========================
+           Decorative background SVG
+           - An inline SVG is placed behind the content to show
+             students sitting at computers in a lab.
+           - It is large, subtle, low-opacity, and non-interactive.
+        ========================== */
+        .bg-illustration {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: 38vh;
+            z-index: 0; /* behind the .container which is z-index:1 */
+            opacity: 0.08; /* subtle */
+            pointer-events: none; /* do not interfere with clicks */
+        }
     </style>
 </head>
 <body>
+    <!-- Inline SVG background illustration of students at computer lab -->
+    <!-- Kept inline so no external assets are required; pointer-events disabled -->
+    <svg class="bg-illustration" viewBox="0 0 1200 300" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+            <style>
+                .desk{fill:#111;opacity:0.95}
+                .monitor{fill:#111}
+                .student{fill:#111}
+            </style>
+        </defs>
+        <!-- Three simple workstation illustrations repeated -->
+        <g transform="translate(80,40)">
+            <rect class="desk" x="0" y="180" width="220" height="12" rx="3"/>
+            <rect class="monitor" x="40" y="80" width="140" height="90" rx="6"/>
+            <rect x="95" y="170" width="30" height="10" fill="#111"/>
+            <circle class="student" cx="110" cy="60" r="18"/>
+            <rect class="student" x="95" y="78" width="30" height="48" rx="6"/>
+        </g>
+        <g transform="translate(440,40)">
+            <rect class="desk" x="0" y="180" width="220" height="12" rx="3"/>
+            <rect class="monitor" x="40" y="80" width="140" height="90" rx="6"/>
+            <rect x="95" y="170" width="30" height="10" fill="#111"/>
+            <circle class="student" cx="110" cy="60" r="18"/>
+            <rect class="student" x="95" y="78" width="30" height="48" rx="6"/>
+        </g>
+        <g transform="translate(800,40)">
+            <rect class="desk" x="0" y="180" width="220" height="12" rx="3"/>
+            <rect class="monitor" x="40" y="80" width="140" height="90" rx="6"/>
+            <rect x="95" y="170" width="30" height="10" fill="#111"/>
+            <circle class="student" cx="110" cy="60" r="18"/>
+            <rect class="student" x="95" y="78" width="30" height="48" rx="6"/>
+        </g>
+    </svg>
     <div class="container">
         <!-- Warning message shown before auto-submit -->
         <div class="warning" id="warningMessage">
@@ -353,9 +406,34 @@
     </div>
 
     <script>
-        // ========== CONFIGURATION ==========
-        // Google Apps Script URL - replace with your actual script URL
-        const SCRIPT_URL = '://https://script.google.com/macros/s/AKfycbxUW4qI2llAFLrDd7qC1f8qQYHZMj7_dpJTyVSp6blyZ0Yt2HPz6Bjk7L9k50hjUOQO/exec;
+                // ========== CONFIGURATION ==========
+                // Google Apps Script URL - replace with your actual script URL
+                // Example format: 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec'
+                const SCRIPT_URL = 'https://script.google.com/macros/s/1_FwyWvUstPUzmrrgFx8AajEW9Pw3eL3rD9izNXkvJ-4/exec';
+
+                /*
+                    Example Google Apps Script (Code.gs) to receive the POST and send email:
+
+                    // Deploy the script as a Web App (Execute as: Me, Who has access: Anyone, even anonymous)
+                    function doPost(e) {
+                        var data = JSON.parse(e.postData.contents);
+                        var subject = 'Exam submitted: ' + data.fullName + ' — ' + data.score + '/' + data.totalQuestions;
+                        var body = 'Name: ' + data.fullName + '\n' +
+                                             'Score: ' + data.score + '/' + data.totalQuestions + '\n' +
+                                             'Answers: ' + JSON.stringify(data.answers) + '\n' +
+                                             'Reason: ' + data.submissionReason + '\n' +
+                                             'Timestamp: ' + data.timestamp;
+                        // Replace with your email address
+                        MailApp.sendEmail('youremail@example.com', subject, body);
+                        return ContentService.createTextOutput(JSON.stringify({status: 'ok'})).setMimeType(ContentService.MimeType.JSON);
+                    }
+
+                    Notes:
+                    - Deploy the Apps Script as a Web App and use its URL as `SCRIPT_URL` above.
+                    - If you keep `fetch` with `mode: 'no-cors'`, Apps Script must allow anonymous access
+                        (Who has access: Anyone, even anonymous). Alternatively remove `no-cors` and
+                        configure CORS on the server side.
+                */
 
         // ========== STATE MANAGEMENT ==========
         // Flag to track if exam has been submitted
@@ -561,24 +639,5 @@
             window.scrollTo(0, 0);
         }
     </script>
-    <script>
-let submitted = false;
-
-document.addEventListener("visibilitychange", function() {
-  if (document.hidden && !submitted) {
-    submitted = true;
-    alert("You left the exam page. Submitting automatically.");
-    document.getElementById("examForm").submit();
-  }
-});
-
-window.onbeforeunload = function() {
-  if (!submitted) {
-    return "Leaving will submit your exam. Are you sure?";
-  }
-};
-</script>
-</body>
-</html>
 </body>
 </html>
