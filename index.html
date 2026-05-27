@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ICT Exam - 16-17 Year Olds Students</title>
+    <style>
+        /* Reset default browser styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Body styling - light background with centered content */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* Main container - white card with shadow */
+        .container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        /* Page title */
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        /* Subtitle/instructions */
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        /* Form group styling */
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        /* Labels for form fields */
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        /* Text input styling */
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        /* Text input focus effect */
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        /* Question container */
+        .question {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        /* Question text styling */
+        .question-text {
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 12px;
+            font-size: 15px;
+        }
+
+        /* Radio button and option wrapper */
+        .option {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Radio button styling */
+        input[type="radio"] {
+            margin-right: 10px;
+            cursor: pointer;
+            accent-color: #667eea;
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Option label styling */
+        .option label {
+            margin: 0;
+            font-weight: normal;
+            cursor: pointer;
+            color: #555;
+            font-size: 14px;
+        }
+
+        /* Button styling - red submit button */
+        button {
+            width: 100%;
+            padding: 14px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s, opacity 0.3s;
+        }
+
+        /* Button hover effect */
+        button:hover:not(:disabled) {
+            background-color: #c82333;
+        }
+
+        /* Disabled button styling */
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        /* Warning message styling */
+        .warning {
+            display: none;
+            background-color: #fff3cd;
+            border: 2px solid #ffc107;
+            color: #856404;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        /* Submission result section styling */
+        .submission-result {
+            display: none;
+            text-align: center;
+            background-color: #f0f8ff;
+            padding: 30px;
+            border-radius: 10px;
+        }
+
+        /* Result message styling */
+        .result-message {
+            color: #333;
+            font-size: 18px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        /* Score display styling */
+        .score {
+            font-size: 48px;
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        /* Score description */
+        .score-label {
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* Form styling to be hidden after submission */
+        #examForm {
+            transition: opacity 0.3s;
+        }
+
+        #examForm.hidden {
+            display: none;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+                border-radius: 8px;
+            }
+
+            h1 {
+                font-size: 22px;
+                margin-bottom: 8px;
+            }
+
+            .subtitle {
+                font-size: 12px;
+                margin-bottom: 20px;
+            }
+
+            input[type="text"],
+            button {
+                font-size: 15px;
+                padding: 10px;
+            }
+
+            .question-text {
+                font-size: 14px;
+            }
+
+            .score {
+                font-size: 36px;
+            }
+
+            .result-message {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Warning message shown before auto-submit -->
+        <div class="warning" id="warningMessage">
+            You left the exam tab. Submitting now...
+        </div>
+
+        <!-- Main exam form -->
+        <form id="examForm">
+            <h1>ICT Exam</h1>
+            <p class="subtitle">Answer all questions. The exam will auto-submit if you leave this tab.</p>
+
+            <!-- Full Name input field -->
+            <div class="form-group">
+                <label for="fullName">Full Name <span style="color: red;">*</span></label>
+                <input type="text" id="fullName" name="fullName" required placeholder="Enter your full name">
+            </div>
+
+            <!-- Question 1: CPU -->
+            <div class="question">
+                <div class="question-text">1. What does CPU stand for?</div>
+                <div class="option">
+                    <input type="radio" id="q1_a" name="q1" value="incorrect" required>
+                    <label for="q1_a">Central Process Unit</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q1_b" name="q1" value="correct">
+                    <label for="q1_b">Central Processing Unit</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q1_c" name="q1" value="incorrect">
+                    <label for="q1_c">Central Processor Utility</label>
+                </div>
+            </div>
+
+            <!-- Question 2: RAM -->
+            <div class="question">
+                <div class="question-text">2. What is the primary function of RAM?</div>
+                <div class="option">
+                    <input type="radio" id="q2_a" name="q2" value="incorrect" required>
+                    <label for="q2_a">To store files permanently on the computer</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q2_b" name="q2" value="correct">
+                    <label for="q2_b">To temporarily store data that the CPU is currently using</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q2_c" name="q2" value="incorrect">
+                    <label for="q2_c">To manage all network connections</label>
+                </div>
+            </div>
+
+            <!-- Question 3: HTTPS -->
+            <div class="question">
+                <div class="question-text">3. What does HTTPS provide that HTTP does not?</div>
+                <div class="option">
+                    <input type="radio" id="q3_a" name="q3" value="incorrect" required>
+                    <label for="q3_a">Faster internet connection speed</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q3_b" name="q3" value="incorrect">
+                    <label for="q3_b">Better website design and layout</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q3_c" name="q3" value="correct">
+                    <label for="q3_c">Encryption and secure data transmission</label>
+                </div>
+            </div>
+
+            <!-- Question 4: Touchscreen -->
+            <div class="question">
+                <div class="question-text">4. Which input device technology allows direct interaction with content on screen?</div>
+                <div class="option">
+                    <input type="radio" id="q4_a" name="q4" value="incorrect" required>
+                    <label for="q4_a">Keyboard</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q4_b" name="q4" value="correct">
+                    <label for="q4_b">Touchscreen</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q4_c" name="q4" value="incorrect">
+                    <label for="q4_c">Microphone</label>
+                </div>
+            </div>
+
+            <!-- Question 5: LAN -->
+            <div class="question">
+                <div class="question-text">5. What does LAN stand for?</div>
+                <div class="option">
+                    <input type="radio" id="q5_a" name="q5" value="incorrect" required>
+                    <label for="q5_a">Long Area Network</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q5_b" name="q5" value="correct">
+                    <label for="q5_b">Local Area Network</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q5_c" name="q5" value="incorrect">
+                    <label for="q5_c">Learning Access Network</label>
+                </div>
+            </div>
+
+            <!-- Submit button -->
+            <button type="submit" id="submitBtn">Submit Exam</button>
+        </form>
+
+        <!-- Section shown after successful submission -->
+        <div class="submission-result" id="submissionResult">
+            <div class="result-message">
+                Exam Submitted. You cannot retake this exam.
+            </div>
+            <div class="score" id="finalScore">0/5</div>
+            <div class="score-label">Your Score</div>
+        </div>
+    </div>
+
+    <script>
+        // ========== CONFIGURATION ==========
+        // Google Apps Script URL - replace with your actual script URL
+        const SCRIPT_URL = '://https://script.google.com/macros/s/AKfycbxUW4qI2llAFLrDd7qC1f8qQYHZMj7_dpJTyVSp6blyZ0Yt2HPz6Bjk7L9k50hjUOQO/exec;
+
+        // ========== STATE MANAGEMENT ==========
+        // Flag to track if exam has been submitted
+        let isExamSubmitted = false;
+
+        // Flag to track if auto-submit is in progress
+        let isAutoSubmitting = false;
+
+        // ========== PAGE VISIBILITY API ==========
+        // Detect when user leaves the exam tab (switches tabs, minimizes window, etc.)
+        document.addEventListener('visibilitychange', function() {
+            // Check if document is now hidden (user left the tab)
+            if (document.hidden && !isExamSubmitted && !isAutoSubmitting) {
+                // Set auto-submit flag to prevent multiple submissions
+                isAutoSubmitting = true;
+                
+                // Show warning message
+                showWarning();
+                
+                // Submit the exam automatically after a short delay
+                setTimeout(function() {
+                    submitExam('tab-switch');
+                }, 1500); // 1.5 second delay to show warning
+            }
+        });
+
+        // ========== BEFOREUNLOAD EVENT ==========
+        // Detect when user tries to close or refresh the page
+        window.addEventListener('beforeunload', function(e) {
+            // Only trigger if exam is not already submitted
+            if (!isExamSubmitted && !isAutoSubmitting) {
+                // Set auto-submit flag
+                isAutoSubmitting = true;
+                
+                // Show warning message
+                showWarning();
+                
+                // Submit exam (this happens before page unload)
+                submitExam('page-unload');
+                
+                // Some browsers require returning a string for the confirmation dialog
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        });
+
+        // ========== WARNING MESSAGE DISPLAY ==========
+        /**
+         * Show the warning message when user leaves the exam
+         */
+        function showWarning() {
+            const warningElement = document.getElementById('warningMessage');
+            warningElement.style.display = 'block';
+        }
+
+        // ========== FORM SUBMISSION HANDLING ==========
+        // Listen for form submission (manual submit button click)
+        document.getElementById('examForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Only allow submission if not already submitted
+            if (!isExamSubmitted) {
+                submitExam('manual-submit');
+            }
+        });
+
+        // ========== AUTO-GRADING FUNCTION ==========
+        /**
+         * Calculate the exam score by checking answers
+         * Returns the number of correct answers (0-5)
+         */
+        function calculateScore() {
+            let score = 0;
+
+            // Check each question's selected answer
+            for (let i = 1; i <= 5; i++) {
+                const selectedAnswer = document.querySelector(`input[name="q${i}"]:checked`);
+                
+                // If answer is selected and is marked as "correct"
+                if (selectedAnswer && selectedAnswer.value === 'correct') {
+                    score++;
+                }
+            }
+
+            return score;
+        }
+
+        // ========== ANSWER COLLECTION ==========
+        /**
+         * Collect all user answers in a structured format
+         * Returns an object with question names as keys and selected values
+         */
+        function collectAnswers() {
+            const answers = {};
+
+            for (let i = 1; i <= 5; i++) {
+                const selectedAnswer = document.querySelector(`input[name="q${i}"]:checked`);
+                answers[`q${i}`] = selectedAnswer ? selectedAnswer.value : null;
+            }
+
+            return answers;
+        }
+
+        // ========== MAIN SUBMISSION FUNCTION ==========
+        /**
+         * Main function to handle exam submission
+         * - Validates form
+         * - Calculates score
+         * - Sends data to Google Apps Script
+         * - Updates UI
+         * - reason: string indicating why exam was submitted ('manual-submit', 'tab-switch', 'page-unload')
+         */
+        function submitExam(reason) {
+            // Mark as submitted to prevent duplicate submissions
+            isExamSubmitted = true;
+
+            // Get full name
+            const fullName = document.getElementById('fullName').value.trim();
+
+            // Validate that name is provided
+            if (!fullName) {
+                alert('Please enter your full name before submitting.');
+                isExamSubmitted = false;
+                return;
+            }
+
+            // Validate that all questions are answered
+            let allAnswered = true;
+            for (let i = 1; i <= 5; i++) {
+                if (!document.querySelector(`input[name="q${i}"]:checked`)) {
+                    allAnswered = false;
+                    break;
+                }
+            }
+
+            if (!allAnswered) {
+                alert('Please answer all questions before submitting.');
+                isExamSubmitted = false;
+                return;
+            }
+
+            // Calculate score
+            const score = calculateScore();
+
+            // Collect all answers
+            const answers = collectAnswers();
+
+            // Get current timestamp in ISO format
+            const timestamp = new Date().toISOString();
+
+            // Create JSON payload to send to server
+            const payload = {
+                fullName: fullName,
+                score: score,
+                totalQuestions: 5,
+                answers: answers,
+                submissionReason: reason,
+                timestamp: timestamp
+            };
+
+            // Send data to Google Apps Script using fetch
+            // Using no-cors mode to avoid CORS issues
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            })
+            .catch(function(error) {
+                // Log error but don't fail the submission
+                // (no-cors requests can't access response)
+                console.log('Data sent to server (no-cors mode)');
+            });
+
+            // Update UI - show results and hide form
+            displayResults(score);
+        }
+
+        // ========== RESULTS DISPLAY ==========
+        /**
+         * Display the submission results and hide the form
+         * score: the student's score (0-5)
+         */
+        function displayResults(score) {
+            // Hide the warning message
+            document.getElementById('warningMessage').style.display = 'none';
+
+            // Hide the exam form
+            const examForm = document.getElementById('examForm');
+            examForm.classList.add('hidden');
+
+            // Disable the submit button to prevent retaking
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+
+            // Update and show the results section
+            document.getElementById('finalScore').textContent = `${score}/5`;
+            document.getElementById('submissionResult').style.display = 'block';
+
+            // Scroll to top to see results
+            window.scrollTo(0, 0);
+        }
+    </script>
+</body>
+</html>
